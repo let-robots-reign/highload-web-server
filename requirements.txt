@@ -1,0 +1,4 @@
+asyncio==3.4.3
+coloredlogs==15.0.1
+humanfriendly==10.0
+uvloop==0.16.0

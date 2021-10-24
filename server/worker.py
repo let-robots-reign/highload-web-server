@@ -33,20 +33,27 @@ async def perform_task(client_socket, worker_name):
     # GET FILENAME
 
     filepath = Config.base_dir + request.url
-    search_folder = request.url.endswith('/')
-    filepath += Config.index_filename if search_folder else ''
+    ends_on_slash = request.url.endswith('/')
+    slash_after_filename = ends_on_slash and '.' in request.url.split('/')[-2]
+    if ends_on_slash:
+        filepath += Config.index_filename
     file_exists = os.path.exists(filepath)
 
     # CREATE RESPONSE
-    status, filepath = 200, filepath if file_exists else None
+
+    status, path = 200, None
     if request.method not in ['GET', 'HEAD']:
         status = 405
-    elif '/..' in request.url or (search_folder and not file_exists):
+    elif slash_after_filename:
+        status = 404
+    elif '/..' in request.url or (ends_on_slash and not file_exists):
         status = 403
     elif (not file_exists) or (not request.is_valid):
         status = 404
+    else:
+        path = filepath
 
-    response = Response(method=request.method, protocol=request.protocol, status=status, filepath=filepath)
+    response = Response(method=request.method, protocol=request.protocol, status=status, filepath=path)
 
     logging.info(f'WORKER {worker_name}: {response.status} {request.method} {request.url}')
 
