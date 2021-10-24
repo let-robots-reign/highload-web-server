@@ -9,8 +9,8 @@ class Config:
     index_filename = 'index.html'
 
     # CONNECTION
-    addr = 'localhost'
-    port = 80
+    addr = '0.0.0.0'
+    port = 3000
     max_connections = 100
     bytes_per_recv = 1024
     sendfile = False
