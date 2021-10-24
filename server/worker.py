@@ -7,6 +7,13 @@ import os.path
 
 
 async def perform_task(client_socket, worker_name):
+    """
+    Корутина для формирования request и отправки response.
+    Должна передаваться в create_task в событийном цикле asyncio
+    :param client_socket: объект сокета
+    :param worker_name: название воркера, используется в логах
+    :return:
+    """
     if Config.log_worker_verbose:
         logging.debug(f'WORKER {worker_name} spawned')
 

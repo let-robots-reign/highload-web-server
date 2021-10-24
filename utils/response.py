@@ -5,14 +5,7 @@ import os
 from datetime import datetime
 from os.path import getsize
 from config import Config
-
-STATUS_MESSAGES = {
-    200: 'OK',
-    400: 'Bad Request',
-    403: 'Forbidden',
-    404: 'Not Found',
-    405: 'Method Not Allowed',
-}
+from const import STATUS_MESSAGES
 
 
 class Response:
