@@ -1,7 +1,6 @@
 import asyncio
 import logging
 import mimetypes
-import os
 from datetime import datetime
 from os.path import getsize
 from config import Config
@@ -50,19 +49,11 @@ class Response:
 
         if self._filepath is not None and self._method == 'GET':
             with open(self._filepath, 'rb') as file:
-                if Config.sendfile:
+                part = file.read(Config.bytes_per_send)
+                while len(part) > 0:
                     try:
-                        await loop.run_in_executor(None, os.sendfile, client_socket.fileno(),
-                                                   file.fileno(), 0, getsize(self._filepath))
+                        await loop.sock_sendall(client_socket, part)
                     except (BrokenPipeError, ConnectionResetError) as e:
                         logging.warning(e)
                         return
-                else:
                     part = file.read(Config.bytes_per_send)
-                    while len(part) > 0:
-                        try:
-                            await loop.sock_sendall(client_socket, part)
-                        except (BrokenPipeError, ConnectionResetError) as e:
-                            logging.warning(e)
-                            return
-                        part = file.read(Config.bytes_per_send)

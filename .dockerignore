@@ -3,4 +3,3 @@ __pycache__/
 .git/
 venv/
 nginx/
-http-test-suite/
